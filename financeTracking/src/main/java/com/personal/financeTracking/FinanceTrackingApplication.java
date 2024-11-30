@@ -1,13 +1,13 @@
-package com.financeTracking.backend;
+package com.personal.financeTracking;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BackendApplication {
+public class FinanceTrackingApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BackendApplication.class, args);
+		SpringApplication.run(FinanceTrackingApplication.class, args);
 	}
 
 }
