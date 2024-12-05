@@ -12,10 +12,6 @@ public class User {
     private String name;
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    private com.personal.financeTracking.user.entities.Department department;
-
     public User(){
 
     }
@@ -44,11 +40,4 @@ public class User {
         this.email = email;
     }
 
-    public com.personal.financeTracking.user.entities.Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(com.personal.financeTracking.user.entities.Department department) {
-        this.department = department;
-    }
 }
