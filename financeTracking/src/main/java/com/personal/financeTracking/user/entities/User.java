@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String user_id;
 
     @Column(nullable = false)
     private String name;
@@ -61,11 +61,11 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
+    public String getId() {
+        return user_id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(String id) { this.user_id = id; }
 
     public String getName() {
         return name;
