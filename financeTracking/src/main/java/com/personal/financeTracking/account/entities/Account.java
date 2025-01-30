@@ -11,5 +11,4 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String account_id;
 
-    private String
 }

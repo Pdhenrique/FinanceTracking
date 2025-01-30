@@ -1,10 +1,13 @@
 package com.personal.financeTracking.user.controllers;
 
+import com.personal.financeTracking.user.dto.UserRequestDTO;
+import com.personal.financeTracking.user.dto.UserResponseDTO;
 import com.personal.financeTracking.user.repositories.UserRepository;
 import com.personal.financeTracking.user.entities.User;
+import com.personal.financeTracking.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -12,22 +15,20 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserRepository repository;
+    private UserService service;
 
     @GetMapping
-    public List<User> findAll() {
-       return repository.findAll();
+    public List<UserResponseDTO> findAll(){
+        return service.findAll();
     }
 
     @GetMapping(value = "/{id}")
-    public User findById(@PathVariable Long id) {
-        return repository.findById(id).get();
-
+    public UserResponseDTO findById(@PathVariable String id) {
+        return service.findById(id);
     }
 
-    @PostMapping(value = "/create")
-    public User create(@RequestBody User user) {
-        return repository.save(user);
-
+    @PostMapping
+    public UserResponseDTO create(@Valid @RequestBody UserRequestDTO userRequestDTO){
+        return service.create(userRequestDTO);
     }
 }
