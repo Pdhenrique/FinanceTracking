@@ -1,15 +1,44 @@
 package com.personal.financeTracking.account.entities;
 
+import com.personal.financeTracking.enums.AccountType;
+import com.personal.financeTracking.user.entities.User;
 import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_account")
+@Data
+@Table(name = "account")
 public class Account {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String account_id;
+    private String id;
 
-    private String
+    @Column(nullable = false)
+    private String bankName;
+
+    @Column(nullable = false, unique = true)
+    private String accountNumber;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
+    @Column(nullable = false)
+    private Double balance;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
