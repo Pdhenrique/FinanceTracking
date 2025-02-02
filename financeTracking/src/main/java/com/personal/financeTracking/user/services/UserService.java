@@ -54,6 +54,7 @@ public class UserService {
         dto.setCpf(user.getCpf());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setAccounts(user.getAccounts());
         return dto;
     }
 }

@@ -1,5 +1,6 @@
 package com.personal.financeTracking.user.entities;
 
+import com.personal.financeTracking.account.entities.Account;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -8,9 +9,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_user")
+@Table(name = "user")
 @Data
 @NoArgsConstructor
 public class User {
@@ -35,8 +37,10 @@ public class User {
     @Pattern(regexp = "\\d{11}", message = "Invalid CPF")
     private String cpf;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts;
+
     @CreatedDate
-    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
