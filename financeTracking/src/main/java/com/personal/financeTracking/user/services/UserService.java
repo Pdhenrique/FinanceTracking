@@ -16,9 +16,13 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private UserRepository repository;
+    private final UserRepository repository;
+    private final BCryptPasswordEncoder encoder;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    public UserService(UserRepository repository){
+        this.repository = repository;
+        this.encoder = new BCryptPasswordEncoder();
+    }
 
     public List<UserResponseDTO> findAll(){
         return repository.findAll().stream()
@@ -31,9 +35,8 @@ public class UserService {
     }
 
     public UserResponseDTO create(UserRequestDTO dto) {
-        Optional<User> existingUser = repository.findByEmailOrCpf(dto.getEmail(), dto.getCpf());
-        if(existingUser.isPresent()) {
-            throw new RuntimeException("User with email or CPF already exists");
+        if (repository.findByEmailOrCpf(dto.getEmail(), dto.getCpf()).isPresent()) {
+            throw new IllegalArgumentException("User with email or CPF already exists");
         }
 
         User user = new User();
