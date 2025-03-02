@@ -1,5 +1,6 @@
 package com.personal.financeTracking.account.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.personal.financeTracking.enums.AccountType;
 import com.personal.financeTracking.user.entities.User;
 import jakarta.persistence.*;
@@ -7,7 +8,6 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
@@ -37,6 +37,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @CreatedDate

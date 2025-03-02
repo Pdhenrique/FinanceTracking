@@ -1,11 +1,7 @@
 package com.personal.financeTracking.user.controllers;
-
 import com.personal.financeTracking.user.dto.UserRequestDTO;
 import com.personal.financeTracking.user.dto.UserResponseDTO;
-import com.personal.financeTracking.user.repositories.UserRepository;
-import com.personal.financeTracking.user.entities.User;
 import com.personal.financeTracking.user.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;

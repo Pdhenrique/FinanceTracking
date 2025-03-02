@@ -1,5 +1,6 @@
 package com.personal.financeTracking.user.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.personal.financeTracking.account.entities.Account;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -40,6 +41,7 @@ public class User {
     private String cpf;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Account> accounts;
 
     @CreatedDate
