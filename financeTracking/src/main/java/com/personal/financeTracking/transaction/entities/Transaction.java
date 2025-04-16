@@ -1,10 +1,9 @@
 package com.personal.financeTracking.transaction.entities;
 
+import com.personal.financeTracking.account.entities.Account;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public class Transaction {
 
@@ -24,4 +23,14 @@ public class Transaction {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private LocalDateTime transactionDate;
+
+    @Column(nullable = false)
+    private String transactionType;
+
+
+    @Column(nullable = false)
+    @OneToMany(mappedBy = "transaction", orphanRemoval = true)
+    private Account account;
 }
