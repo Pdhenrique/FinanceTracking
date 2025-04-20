@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class AccountRequestDTO {
 
@@ -21,5 +23,5 @@ public class AccountRequestDTO {
     private AccountType accountType;
 
     @NotBlank(message = "User id cannot be null")
-    private String userId;
+    private UUID userId;
 }

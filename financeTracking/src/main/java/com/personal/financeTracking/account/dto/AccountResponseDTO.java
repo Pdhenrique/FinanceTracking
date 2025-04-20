@@ -16,4 +16,5 @@ public class AccountResponseDTO {
     private Double balance;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private boolean active;
 }

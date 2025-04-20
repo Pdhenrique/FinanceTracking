@@ -57,6 +57,7 @@ public class AccountService {
      dto.setUpdatedAt(account.getCreatedAt());
      dto.setUser(account.getUser());
      dto.setUser(account.getUser());
+     dto.setActive(account.getUser().isActive());
      return dto;
     }
 }

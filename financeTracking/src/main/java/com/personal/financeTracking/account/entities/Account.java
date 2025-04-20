@@ -35,6 +35,8 @@ public class Account {
     @Column(nullable = false)
     private Double balance;
 
+    private boolean active = true;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference

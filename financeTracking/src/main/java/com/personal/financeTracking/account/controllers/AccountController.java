@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/accounts")
-public class AccountController {
+public class  AccountController {
 
     private final AccountService service;
 

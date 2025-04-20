@@ -5,6 +5,7 @@ import com.personal.financeTracking.user.services.UserService;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public UserResponseDTO findById(@PathVariable String id) {
+    public UserResponseDTO findById(@PathVariable UUID id) {
         return service.findById(id);
     }
 

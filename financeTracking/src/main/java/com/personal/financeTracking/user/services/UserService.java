@@ -4,11 +4,13 @@ import com.personal.financeTracking.user.dto.UserRequestDTO;
 import com.personal.financeTracking.user.dto.UserResponseDTO;
 import com.personal.financeTracking.user.entities.User;
 import com.personal.financeTracking.user.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -17,7 +19,15 @@ public class UserService {
 
     @Autowired
     private final UserRepository repository;
-    private final BCryptPasswordEncoder encoder;
+    private final PasswordEncoder encoder;
+
+    @Transactional
+    public void deactivate(UUID id) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);
+        user.getAccounts().forEach(acc -> acc.setActive(false));
+    }
 
     public UserService(UserRepository repository){
         this.repository = repository;
@@ -29,7 +39,7 @@ public class UserService {
                 .map(this::toResponseDTO).collect(Collectors.toList());
     }
 
-    public UserResponseDTO findById(String id) {
+    public UserResponseDTO findById(UUID id) {
         User user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
         return toResponseDTO(user);
     }
