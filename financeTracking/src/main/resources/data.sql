@@ -1,7 +1,7 @@
 -- ---------- USERS ----------
 INSERT INTO tb_users (id, name, email, password, cpf, active)
 VALUES
- ('550e8400-e29b-41d4-a716-446655440000', 'Maria', 'maria@gmail.com', 'Teste12', '00000000000', true),
+ ('550e8400-e29b-41d4-a716-446655440000', 'Maria', 'maria@gmail.com', '$2a$10$RSSl0EFc9EELXM8QDLStYOW2AUxu3Ao.NggnKI6No3Dnqacqm5d7.', '00000000000', true),
  ('660e8400-e29b-41d4-a716-556655440001', 'Bob'  , 'bob@gmail.com'  , 'este2' , '00000000001', true),
  ('770e8400-e29b-41d4-a716-666655440002', 'Alex' , 'alex@gmail.com' , 'dawd'  , '00000000002', true),
  ('880e8400-e29b-41d4-a716-776655440003', 'Ana'  , 'ana@gmail.com'  , 'awdwaaw','00000000003', true);
