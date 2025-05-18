@@ -4,7 +4,6 @@ package com.personal.financeTracking.account.controllers;
 import com.personal.financeTracking.account.dto.AccountRequestDTO;
 import com.personal.financeTracking.account.dto.AccountResponseDTO;
 import com.personal.financeTracking.account.services.AccountService;
-import com.personal.financeTracking.user.controllers.UserController;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
