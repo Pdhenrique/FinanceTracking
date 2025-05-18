@@ -1,7 +1,9 @@
 package com.personal.financeTracking.user.controllers;
+import com.personal.financeTracking.user.dto.LoginRequestDTO;
 import com.personal.financeTracking.user.dto.UserRequestDTO;
 import com.personal.financeTracking.user.dto.UserResponseDTO;
 import com.personal.financeTracking.user.services.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -30,5 +32,11 @@ public class UserController {
     @PostMapping
     public UserResponseDTO create(@Valid @RequestBody UserRequestDTO userRequestDTO){
         return service.create(userRequestDTO);
+    }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<UserResponseDTO> login(@RequestBody @Valid LoginRequestDTO dto){
+        UserResponseDTO user = service.login(dto);
+        return ResponseEntity.ok(user);
     }
 }

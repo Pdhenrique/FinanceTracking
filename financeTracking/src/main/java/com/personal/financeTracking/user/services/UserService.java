@@ -1,14 +1,17 @@
 package com.personal.financeTracking.user.services;
 
+import com.personal.financeTracking.user.dto.LoginRequestDTO;
 import com.personal.financeTracking.user.dto.UserRequestDTO;
 import com.personal.financeTracking.user.dto.UserResponseDTO;
 import com.personal.financeTracking.user.entities.User;
 import com.personal.financeTracking.user.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,6 +35,21 @@ public class UserService {
     public UserService(UserRepository repository){
         this.repository = repository;
         this.encoder = new BCryptPasswordEncoder();
+    }
+
+    public UserResponseDTO login(LoginRequestDTO dto) {
+        User user = repository.findByEmail(dto.getEmail()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Credentials"));
+
+        if(!encoder.matches(dto.getPassword(), user.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        if(!user.isActive()){
+            throw new ResponseStatusException(HttpStatus.LOCKED, "User is deactivated");
+        }
+
+        return toResponseDTO(user);
     }
 
     public List<UserResponseDTO> findAll(){
