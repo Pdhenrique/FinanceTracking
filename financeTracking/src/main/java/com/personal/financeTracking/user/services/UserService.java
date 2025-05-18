@@ -1,5 +1,6 @@
 package com.personal.financeTracking.user.services;
 
+import com.personal.financeTracking.mappers.AccountMapper;
 import com.personal.financeTracking.user.dto.UserRequestDTO;
 import com.personal.financeTracking.user.dto.UserResponseDTO;
 import com.personal.financeTracking.user.entities.User;
@@ -17,9 +18,11 @@ import java.util.List;
 @Service
 public class UserService {
 
-    @Autowired
     private final UserRepository repository;
     private final PasswordEncoder encoder;
+
+    @Autowired
+    private AccountMapper accountMapper;
 
     @Transactional
     public void deactivate(UUID id) {
@@ -60,14 +63,16 @@ public class UserService {
     }
 
     private UserResponseDTO toResponseDTO(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setCpf(user.getCpf());
-        dto.setCreatedAt(user.getCreatedAt());
-        dto.setUpdatedAt(user.getUpdatedAt());
-        dto.setAccounts(user.getAccounts());
-        return dto;
+        return UserResponseDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .cpf(user.getCpf())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .accounts(user.getAccounts().stream()
+                        .map(accountMapper::toSimpleAccountDTO)
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
