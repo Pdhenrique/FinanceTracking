@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 public class AccountMapper {
 
     public SimpleAccountDto toSimpleAccountDTO(Account account) {
+        if (account == null) return null;
+
         return SimpleAccountDto.builder()
                 .id(account.getId())
                 .bankName(account.getBankName())

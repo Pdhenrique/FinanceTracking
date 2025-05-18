@@ -1,7 +1,7 @@
 package com.personal.financeTracking.user.dto;
 
 import com.personal.financeTracking.account.dto.SimpleAccountDto;
-import com.personal.financeTracking.account.entities.Account;
+
 import lombok.Builder;
 import lombok.Data;
 

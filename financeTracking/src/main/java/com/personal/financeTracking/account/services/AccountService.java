@@ -59,7 +59,7 @@ public class AccountService {
                 .accountNumber(account.getAccountNumber())
                 .accountType(account.getAccountType())
                 .balance(account.getBalance())
-                .active(account.isActive())  // agora sim pega o active da conta
+                .active(account.isActive())
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())
                 .userId(account.getUser().getId())
