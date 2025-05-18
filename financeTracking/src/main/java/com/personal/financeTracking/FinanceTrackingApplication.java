@@ -17,8 +17,6 @@ public class FinanceTrackingApplication {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(new BCryptPasswordEncoder().encode("Teste12"));
-
 		SpringApplication.run(FinanceTrackingApplication.class, args);
 	}
 
