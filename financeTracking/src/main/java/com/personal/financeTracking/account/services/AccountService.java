@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,12 @@ public class AccountService {
     public List<AccountResponseDTO> findAll(){
 
         return repository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());
+    }
+
+    public AccountResponseDTO findById(UUID id) {
+        Account account = repository.findById(id.toString())
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        return toResponseDTO(account);
     }
 
     public AccountResponseDTO create(@Valid AccountRequestDTO dto) {
@@ -45,19 +52,17 @@ public class AccountService {
       return toResponseDTO(account);
     }
 
-    private AccountResponseDTO toResponseDTO(Account account){
-     AccountResponseDTO dto = new AccountResponseDTO();
-
-     dto.setId(account.getId());
-     dto.setAccountNumber(account.getAccountNumber());
-     dto.setAccountType(account.getAccountType());
-     dto.setBalance(account.getBalance());
-     dto.setBankName(account.getBankName());
-     dto.setCreatedAt(account.getCreatedAt());
-     dto.setUpdatedAt(account.getCreatedAt());
-     dto.setUser(account.getUser());
-     dto.setUser(account.getUser());
-     dto.setActive(account.getUser().isActive());
-     return dto;
+    private AccountResponseDTO toResponseDTO(Account account) {
+        return AccountResponseDTO.builder()
+                .id(account.getId())
+                .bankName(account.getBankName())
+                .accountNumber(account.getAccountNumber())
+                .accountType(account.getAccountType())
+                .balance(account.getBalance())
+                .active(account.isActive())
+                .createdAt(account.getCreatedAt())
+                .updatedAt(account.getUpdatedAt())
+                .userId(account.getUser().getId())
+                .build();
     }
 }

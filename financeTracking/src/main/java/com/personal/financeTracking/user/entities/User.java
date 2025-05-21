@@ -60,7 +60,7 @@ public class User {
     @JsonManagedReference
     private final List<Account> accounts = new ArrayList<>();
 
-    public List<Account> getAccount() {
+    public List<Account> getAccounts() {
         return Collections.unmodifiableList(accounts);
     }
 
