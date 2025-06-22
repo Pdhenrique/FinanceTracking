@@ -23,8 +23,8 @@ type UserStorage interface {
 	Insert(user *User) (*User, error)
 	Update(user *User) (*User, error)
 	Delete(id int64) error
-	GetByID(id int64) (User, error)
-	GetByCpf(cpf string) (User, error)
+	FindByID(id int64) (User, error)
+	FindByCpf(cpf string) (User, error)
 }
 
 func NewUser(
