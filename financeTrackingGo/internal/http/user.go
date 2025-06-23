@@ -36,7 +36,7 @@ func (handler *handler) postUser(context *gin.Context) {
 }
 
 func (handler *handler) putUser(context *gin.Context) {
-	id :=  context.Param("id")
+	id := context.Param("id")
 	user := &domain.User{}
 
 	if err := context.ShouldBindJSON(&user); err != nil {
@@ -57,16 +57,15 @@ func (handler *handler) putUser(context *gin.Context) {
 	context.JSON(http.StatusOK, user)
 }
 
-
 func (handler *handler) deleteUser(context *gin.Context) {
 	id := context.Param("id")
 
 	err := handler.userService.Delete(id)
-	
+
 	if err != nil {
 		context.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
-	context.AbortWithStatus(http.StatusNoContext)
+	context.AbortWithStatus(http.StatusNoContent)
 }

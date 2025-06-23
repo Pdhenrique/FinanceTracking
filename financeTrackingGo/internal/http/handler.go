@@ -23,7 +23,7 @@ func NewHandler(userService domain.UserService) http.Handler {
 
 	v1.POST("/users", h.postUser)
 	v1.GET("/users/:id", h.getUser)
-	v1.PUT("/users/:id" h.putUser)
+	v1.PUT("/users/:id", h.putUser)
 	v1.DELETE("/users/:id", h.deleteUser)
 
 	return router

@@ -1,7 +1,7 @@
 package domain
 
 type User struct {
-	ID         int64  `json:"id"`
+	ID         string `json:"id"`
 	NAME       string `json:"name"`
 	EMAIL      string `json:"email"`
 	PASSWORD   string `json:"password"`
@@ -13,21 +13,22 @@ type User struct {
 
 type UserService interface {
 	GetByCpf(cpf string) (User, error)
-	GetByID(id int64) (User, error)
+	GetByID(id string) (User, error)
 	Create(user *User) (*User, error)
-	Update(user *User) (*User, error)
-	Delete(id int64) error
+	Update(user *User) error
+	Delete(id string) error
 }
 
 type UserStorage interface {
 	Insert(user *User) (*User, error)
-	Update(user *User) (*User, error)
-	Delete(id int64) error
-	FindByID(id int64) (User, error)
-	FindByCpf(cpf string) (User, error)
+	Update(user *User) error
+	Delete(id string) error
+	FindByID(id string) (*User, error)
+	FindByCpf(cpf string) (*User, error)
 }
 
 func NewUser(
+	id string,
 	cpf string,
 	name string,
 	email string,
@@ -44,6 +45,6 @@ func NewUser(
 		ACITVE:     active,
 		CREATED_AT: createdAt,
 		UPDATED_AT: updatedAt,
-		ID:         0,
+		ID:         id,
 	}
 }
