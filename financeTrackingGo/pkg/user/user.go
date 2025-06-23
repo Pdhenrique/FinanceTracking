@@ -7,27 +7,27 @@ type service struct {
 }
 
 func NewService(userStorage domain.UserStorage) *service {
-	return &service {
-		userStorage: userStorage
+	return &service{
+		userStorage: userStorage,
 	}
 }
 
 func (s *service) Create(user *domain.User) (*domain.User, error) {
-	return s.userStorage.Insert(client)
+	return s.userStorage.Insert(user)
 }
 
-func (s *service) Get(cpf string) (*domain.Client, error) {
-	return s.userStorage.FindByCpf
+func (s *service) GetByCpf(cpf string) (*domain.User, error) {
+	return s.userStorage.FindByCpf(cpf)
 }
 
-func (s *service) Get(id string) (*domain.Client, error) {
-	return s.userStorage.FindByCpf
+func (s *service) GetByID(id string) (*domain.User, error) {
+	return s.userStorage.FindByID(id)
 }
 
-func (s *service) Delete(id string) (*domain.Client, error) {
-	return s.userStorage.Delete
+func (s *service) Delete(id string) error {
+	return s.userStorage.Delete(id)
 }
 
-func (s *service) Update(user *domain.User) (*domain.Client, error) {
-	return s.userStorage.Update
+func (s *service) Update(user *domain.User) error {
+	return s.userStorage.Update(user)
 }

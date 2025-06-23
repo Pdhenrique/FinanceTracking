@@ -12,8 +12,8 @@ type User struct {
 }
 
 type UserService interface {
-	GetByCpf(cpf string) (User, error)
-	GetByID(id string) (User, error)
+	GetByCpf(cpf string) (*User, error)
+	GetByID(id string) (*User, error)
 	Create(user *User) (*User, error)
 	Update(user *User) error
 	Delete(id string) error
