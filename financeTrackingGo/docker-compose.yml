@@ -3,21 +3,19 @@ networks:
     name: "finance-network"
 services:
   app:
-      container_name: api_finance
-      build:
-        dockerfile: Dockerfile
-        network: host
-        context: .
-      environment:
-        DATABASE_URL: "jdbc:postgresql://postgres.lpaoqhkjphpnfajyxogk:password@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
-      ports:
-        - "8080:8080"
-      # links:
-      #   - db
-      networks:
-        - finance-network
-      env_file:
-        - .env
+    container_name: api_finance
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: >-
+        postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+    ports:
+      - "8080:8080"
+    networks:
+      - finance-network
 
   # db:
   #   image: postgres:15
@@ -38,7 +36,6 @@ services:
   #   interval: 5s
   #   timeout: 5s
   #   retries: 5
-
 
 volumes:
   pgdata:
