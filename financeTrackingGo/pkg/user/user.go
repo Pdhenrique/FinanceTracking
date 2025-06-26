@@ -1,6 +1,10 @@
 package user
 
-import "github.com/Pdhenrique/FinanceTracking/domain"
+import (
+	"time"
+
+	"github.com/Pdhenrique/FinanceTracking/domain"
+)
 
 type service struct {
 	userStorage domain.UserStorage
@@ -13,6 +17,9 @@ func NewService(userStorage domain.UserStorage) *service {
 }
 
 func (s *service) Create(user *domain.User) (*domain.User, error) {
+
+	user.CREATED_AT = time.Now().Format(time.RFC3339)
+
 	return s.userStorage.Insert(user)
 }
 

@@ -20,7 +20,7 @@ func NewUserStorage(db *sql.DB) domain.UserStorage {
 func (u *userStorage) FindByID(id string) (*domain.User, error) {
 	var user domain.User
 
-	err := u.DB.QueryRow(``, id).Scan(
+	err := u.DB.QueryRow(`SELECT * FROM tb_users WHERE id = $1`, id).Scan(
 		&user.ID,
 		&user.CPF,
 		&user.NAME,
@@ -40,7 +40,7 @@ func (u *userStorage) FindByID(id string) (*domain.User, error) {
 func (u *userStorage) FindByCpf(cpf string) (*domain.User, error) {
 	var user domain.User
 
-	err := u.DB.QueryRow(``, cpf).Scan(
+	err := u.DB.QueryRow(`SELECT * FROM tb_users WHERE cpf = $1`, cpf).Scan(
 		&user.ID,
 		&user.CPF,
 		&user.NAME,
@@ -59,7 +59,7 @@ func (u *userStorage) FindByCpf(cpf string) (*domain.User, error) {
 }
 
 func (u *userStorage) Delete(id string) error {
-	_, err := u.DB.Exec(``, id)
+	_, err := u.DB.Exec(`DELETE FROM tb_users WHERE id = $1`, id)
 
 	if err != nil {
 		log.Printf("Error deleting user with ID %s: %v", id, err)
@@ -87,7 +87,7 @@ func (u *userStorage) Update(user *domain.User) error {
 }
 
 func (u *userStorage) Insert(user *domain.User) (*domain.User, error) {
-	err := u.DB.QueryRow(``,
+	err := u.DB.QueryRow(`INSERT INTO tb_users (id, cpf, name, email, password, created_at, updated_at, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
 		user.ID,
 		user.CPF,
 		user.NAME,
