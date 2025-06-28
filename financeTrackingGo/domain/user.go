@@ -25,6 +25,7 @@ type UserStorage interface {
 	Delete(id string) error
 	FindByID(id string) (*User, error)
 	FindByCpf(cpf string) (*User, error)
+	FindByEmailOrCpf(email string, cpf string) (*User, error)
 }
 
 func NewUser(
