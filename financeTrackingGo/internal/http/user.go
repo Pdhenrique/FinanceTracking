@@ -26,7 +26,7 @@ func (handler *handler) postUser(context *gin.Context) {
 		return
 	}
 
-	user, err := handler.userService.Create(user)
+	user, err := handler.userService.Post(user)
 	if err != nil {
 		context.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -47,7 +47,7 @@ func (handler *handler) putUser(context *gin.Context) {
 
 	user.ID = id
 
-	err := handler.userService.Update(user)
+	err := handler.userService.Put(user)
 
 	if err != nil {
 		context.AbortWithStatus(http.StatusInternalServerError)

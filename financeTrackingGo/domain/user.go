@@ -8,14 +8,14 @@ type User struct {
 	CPF        string `json:"cpf"`
 	CREATED_AT string `json:"created_at"`
 	UPDATED_AT string `json:"updated_at"`
-	ACITVE     bool   `json:"active"`
+	ACTIVE     bool   `json:"active"`
 }
 
 type UserService interface {
 	GetByCpf(cpf string) (*User, error)
 	GetByID(id string) (*User, error)
-	Create(user *User) (*User, error)
-	Update(user *User) error
+	Post(user *User) (*User, error)
+	Put(user *User) error
 	Delete(id string) error
 }
 
@@ -43,7 +43,7 @@ func NewUser(
 		NAME:       name,
 		EMAIL:      email,
 		PASSWORD:   password,
-		ACITVE:     active,
+		ACTIVE:     active,
 		CREATED_AT: createdAt,
 		UPDATED_AT: updatedAt,
 		ID:         id,

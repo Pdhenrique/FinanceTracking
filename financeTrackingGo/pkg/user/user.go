@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Pdhenrique/FinanceTracking/domain"
+	"github.com/Pdhenrique/FinanceTracking/pkg/util"
 )
 
 type service struct {
@@ -27,6 +28,13 @@ func (s *service) Create(user *domain.User) (*domain.User, error) {
 	if existing != nil {
 		return nil, fmt.Errorf("user with email %s or cpf %s already exists", existing.EMAIL, existing.CPF)
 	}
+
+	hashedPassword, err := util.HashPassword(user.PASSWORD)
+	if err != nil {
+		return nil, fmt.Errorf("error hashing password: %w", err)
+	}
+
+	user.PASSWORD = hashedPassword
 
 	user.CREATED_AT = time.Now().Format(time.RFC3339)
 
