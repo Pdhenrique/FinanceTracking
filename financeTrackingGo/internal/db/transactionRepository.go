@@ -17,7 +17,7 @@ func NewTransactionStorage(db *sql.DB) *transactionStorage {
 	}
 }
 
-func (t *transactionStorage) Insert(transaction *domain.Transaction) (*domain.Transaction, error) {
+func (t *transactionStorage) Post(transaction *domain.Transaction) (*domain.Transaction, error) {
 	err := t.DB.QueryRow(
 		`INSERT INTO tb_transactions (id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance) 
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
@@ -39,6 +39,65 @@ func (t *transactionStorage) Insert(transaction *domain.Transaction) (*domain.Tr
 	}
 
 	return transaction, nil
+}
+
+func (t *transactionStorage) Put(transaction *domain.Transaction) error {
+	_, err := t.DB.Exec(``,
+		&transaction.ID,
+		&transaction.AGENCY,
+		&transaction.ACCOUNT_ID,
+		&transaction.RELEASE_DATE,
+		&transaction.ACCOUNTING_DATE,
+		&transaction.TITLE,
+		&transaction.DESCRIPTION,
+		&transaction.INCOME,
+		&transaction.EXPENSE,
+		&transaction.DAILY_BALANCE,
+	)
+
+	if err != nil {
+		log.Printf("Error updating transaction with ID %s: %v", transaction.ID, err)
+	}
+
+	return err
+}
+
+func (t *transactionStorage) FindByID(id string) (*domain.Transaction, error) {
+	transaction := &domain.Transaction{}
+
+	err := t.DB.QueryRow(
+		`SELECT id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance 
+		 FROM tb_transactions WHERE id = $1`,
+		id,
+	).Scan(
+		&transaction.ID,
+		&transaction.AGENCY,
+		&transaction.ACCOUNT_ID,
+		&transaction.RELEASE_DATE,
+		&transaction.ACCOUNTING_DATE,
+		&transaction.TITLE,
+		&transaction.DESCRIPTION,
+		&transaction.INCOME,
+		&transaction.EXPENSE,
+		&transaction.DAILY_BALANCE,
+	)
+
+	if err != nil {
+		log.Printf("Error finding transaction with ID %s: %v", id, err)
+		return nil, err
+	}
+
+	return transaction, nil
+}
+
+func (t *transactionStorage) Delete(id string) error {
+	_, err := t.DB.Exec(``, id)
+
+	if err != nil {
+		log.Printf("Error deleting user with ID: %s: %v", id, err)
+	}
+
+	return err
 }
 
 func (t *transactionStorage) ImportTransactions(transactions []*domain.Transaction) error {
