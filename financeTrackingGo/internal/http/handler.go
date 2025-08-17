@@ -12,7 +12,7 @@ type handler struct {
 	transactionService domain.TransactionService
 }
 
-func NewClientHandler(userService domain.UserService) http.Handler {
+func NewUserHandler(userService domain.UserService) http.Handler {
 	h := &handler{
 		userService: userService,
 	}
@@ -41,6 +41,6 @@ func NewTransactionHandler(transactionService domain.TransactionService) http.Ha
 	v1 := router.Group("/v1")
 
 	v1.GET("/transactions/:id", h.getTransaction)
-
+	v1.POST("/transactions", h.postTransaction)
 	return router
 }

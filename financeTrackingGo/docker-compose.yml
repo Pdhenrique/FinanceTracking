@@ -17,25 +17,5 @@ services:
     networks:
       - finance-network
 
-  # db:
-  #   image: postgres:15
-  #   container_name: db_finance
-  #   environment:
-  #     POSTGRES_USER: user
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_DB: mydb
-  #   ports:
-  #     - "5555:5432"
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
-  #     - ./db/init:/docker-entrypoint-initdb.d
-  #   networks:
-  #     - finance-network
-  # healthcheck:
-  #   test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
-  #   interval: 5s
-  #   timeout: 5s
-  #   retries: 5
-
 volumes:
   pgdata:

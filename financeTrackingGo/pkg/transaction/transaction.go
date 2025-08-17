@@ -6,7 +6,7 @@ type service struct {
 	transactionStorage domain.TransactionStorage
 }
 
-func NewService(transactionStorage domain.Transaction) *service {
+func NewService(transactionStorage domain.TransactionStorage) *service {
 	return &service{
 		transactionStorage: transactionStorage,
 	}
@@ -24,7 +24,7 @@ func (s *service) Put(transaction *domain.Transaction) error {
 	return s.transactionStorage.Update(transaction)
 }
 
-func (s *service) findByID(id string) (*domain.Transaction, error) {
+func (s *service) GetByID(id string) (*domain.Transaction, error) {
 	return s.transactionStorage.FindByID(id)
 }
 

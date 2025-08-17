@@ -18,7 +18,7 @@ func NewService(userStorage domain.UserStorage) *service {
 	}
 }
 
-func (s *service) Create(user *domain.User) (*domain.User, error) {
+func (s *service) Post(user *domain.User) (*domain.User, error) {
 
 	existing, err := s.userStorage.FindByEmailOrCpf(user.EMAIL, user.CPF)
 	if err != nil {
@@ -53,6 +53,6 @@ func (s *service) Delete(id string) error {
 	return s.userStorage.Delete(id)
 }
 
-func (s *service) Update(user *domain.User) error {
+func (s *service) Put(user *domain.User) error {
 	return s.userStorage.Update(user)
 }

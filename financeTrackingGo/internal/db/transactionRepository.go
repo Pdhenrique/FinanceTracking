@@ -17,7 +17,7 @@ func NewTransactionStorage(db *sql.DB) *transactionStorage {
 	}
 }
 
-func (t *transactionStorage) Post(transaction *domain.Transaction) (*domain.Transaction, error) {
+func (t *transactionStorage) Insert(transaction *domain.Transaction) (*domain.Transaction, error) {
 	err := t.DB.QueryRow(
 		`INSERT INTO tb_transactions (id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance) 
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
@@ -41,7 +41,7 @@ func (t *transactionStorage) Post(transaction *domain.Transaction) (*domain.Tran
 	return transaction, nil
 }
 
-func (t *transactionStorage) Put(transaction *domain.Transaction) error {
+func (t *transactionStorage) Update(transaction *domain.Transaction) error {
 	_, err := t.DB.Exec(``,
 		&transaction.ID,
 		&transaction.AGENCY,
