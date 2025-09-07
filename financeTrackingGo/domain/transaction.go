@@ -1,5 +1,7 @@
 package domain
 
+import "io"
+
 type Transaction struct {
 	ID              string  `json:"id"`
 	AGENCY          string  `json:"agency"`
@@ -17,7 +19,7 @@ type TransactionService interface {
 	Post(transaction *Transaction) (*Transaction, error)
 	Put(transaction *Transaction) error
 	Delete(id string) error
-	ImportTransactions(transactions []*Transaction) error
+	ImportTransactions(r io.Reader) (int, error)
 	GetByID(id string) (*Transaction, error)
 }
 
