@@ -10,8 +10,8 @@ import (
 	"github.com/Pdhenrique/FinanceTracking/domain"
 )
 
-func Parse(reader io.Reader) ([]domain.Transaction, error) {
-	transactions := []domain.Transaction{}
+func Parse(reader io.Reader) ([]*domain.Transaction, error) {
+	transactions := make([]*domain.Transaction, 0, 1024)
 	scanner := bufio.NewScanner(reader)
 
 	var currentTransaction domain.Transaction
@@ -40,7 +40,7 @@ func Parse(reader io.Reader) ([]domain.Transaction, error) {
 		}
 
 		// monta Transaction
-		currentTransaction = domain.Transaction{
+		currentTransaction := &domain.Transaction{
 			ID:              strings.TrimSpace(columns[0]),
 			RELEASE_DATE:    strings.TrimSpace(columns[1]),
 			ACCOUNTING_DATE: strings.TrimSpace(columns[2]),
