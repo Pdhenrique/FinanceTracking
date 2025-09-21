@@ -6,6 +6,7 @@ import (
 
 	"github.com/Pdhenrique/FinanceTracking/internal/db"
 	"github.com/Pdhenrique/FinanceTracking/internal/http"
+	"github.com/Pdhenrique/FinanceTracking/pkg/transaction"
 	"github.com/Pdhenrique/FinanceTracking/pkg/user"
 
 	"github.com/joho/godotenv"
@@ -46,8 +47,12 @@ func main() {
 	defer conn.Close()
 
 	userStorage := db.NewUserStorage(conn)
+	transactionStorage := db.NewTransactionStorage(conn)
+
 	userService := user.NewService(userStorage)
-	handler := http.NewUserHandler(userService)
+	transactionService := transaction.NewService(transactionStorage)
+
+	handler := http.NewHandler(userService, transactionService)
 
 	server := http.NewServer(handler, "8080")
 	server.Start()

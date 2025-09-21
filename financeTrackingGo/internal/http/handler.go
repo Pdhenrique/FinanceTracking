@@ -12,35 +12,35 @@ type handler struct {
 	transactionService domain.TransactionService
 }
 
-func NewUserHandler(userService domain.UserService) http.Handler {
-	h := &handler{
-		userService: userService,
-	}
-
+func NewHandler(userService domain.UserService, transactionService domain.TransactionService) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 
-	router := gin.New()
-	v1 := router.Group("/v1")
+	r := gin.New()
+	r.Use(gin.Logger(), gin.Recovery())
 
+	h := &handler{
+		userService:        userService,
+		transactionService: transactionService,
+	}
+
+	v1 := r.Group("/v1")
+	registerUserRoutes(v1, h)
+	registerTransactionRoutes(v1, h)
+
+	r.GET("/__health", func(c *gin.Context) { c.String(200, "ok") })
+
+	return r
+}
+
+func registerUserRoutes(v1 *gin.RouterGroup, h *handler) {
 	v1.POST("/users", h.postUser)
 	v1.GET("/users/:id", h.getUser)
 	v1.PUT("/users/:id", h.putUser)
 	v1.DELETE("/users/:id", h.deleteUser)
-
-	return router
 }
 
-func NewTransactionHandler(transactionService domain.TransactionService) http.Handler {
-	h := &handler{
-		transactionService: transactionService,
-	}
-
-	gin.SetMode(gin.ReleaseMode)
-
-	router := gin.New()
-	v1 := router.Group("/v1")
-
+func registerTransactionRoutes(v1 *gin.RouterGroup, h *handler) {
 	v1.GET("/transactions/:id", h.getTransaction)
 	v1.POST("/transactions", h.postTransaction)
-	return router
+	v1.POST("/statement", h.importTransactions)
 }

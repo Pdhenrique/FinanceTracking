@@ -6,63 +6,88 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Pdhenrique/FinanceTracking/domain"
+	"github.com/google/uuid"
 )
 
-func Parse(reader io.Reader) ([]*domain.Transaction, error) {
-	transactions := make([]*domain.Transaction, 0, 1024)
-	scanner := bufio.NewScanner(reader)
+func Parse(r io.Reader) ([]*domain.Transaction, error) {
+	sc := bufio.NewScanner(r)
+	sc.Buffer(make([]byte, 0, 64*1024), 1024*1024)
 
-	var currentTransaction domain.Transaction
-	fmt.Println("PARSE INICIADO")
+	var agency, accountID string
 
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+	txs := make([]*domain.Transaction, 0, 1024)
+
+	for sc.Scan() {
+		line := strings.TrimSpace(sc.Text())
 		if line == "" {
 			continue
 		}
 
-		if strings.Contains(line, "Agência:") {
-			parts := strings.Split(line, "Conta:")
-			currentTransaction.AGENCY = strings.TrimSpace(strings.Split(parts[0], ":")[1])
-			currentTransaction.ACCOUNT_ID = strings.TrimSpace(parts[1])
+		// "Agência: X / Conta: Y"
+		if strings.Contains(line, "Agência:") && strings.Contains(line, "Conta:") {
+			parts := strings.SplitN(line, "Conta:", 2)
+			if len(parts) == 2 {
+				left := strings.TrimSpace(parts[0])
+				right := strings.TrimSpace(parts[1])
+				kv := strings.SplitN(left, ":", 2)
+				if len(kv) == 2 {
+					agency = strings.TrimSpace(kv[1])
+				}
+				accountID = strings.TrimSpace(right)
+			}
 			continue
 		}
 
-		if strings.HasPrefix(line, "ID,") {
+		// pula header da grade
+		up := strings.ToUpper(line)
+		if strings.HasPrefix(up, "DATA LAN") {
 			continue
 		}
 
-		columns := strings.Split(line, ",")
-		if len(columns) < 8 {
+		cols := strings.Split(line, ",")
+		if len(cols) < 7 {
 			continue
 		}
 
-		// monta Transaction
-		currentTransaction := &domain.Transaction{
-			ID:              strings.TrimSpace(columns[0]),
-			RELEASE_DATE:    strings.TrimSpace(columns[1]),
-			ACCOUNTING_DATE: strings.TrimSpace(columns[2]),
-			TITLE:           strings.TrimSpace(columns[3]),
-			DESCRIPTION:     strings.TrimSpace(columns[4]),
+		income, _ := parseMoney(cols[4])
+		expense, _ := parseMoney(cols[5])
+		balance, _ := parseMoney(cols[6])
+		releaseDate, err := time.Parse("02/01/2006", strings.TrimSpace(cols[0]))
+		if err != nil {
+			return nil, fmt.Errorf("erro ao converter release_date %s: %w", cols[0], err)
+		}
+		accountingDate, err := time.Parse("02/01/2006", strings.TrimSpace(cols[1]))
+		if err != nil {
+			return nil, fmt.Errorf("erro ao converter accounting_date %s: %w", cols[1], err)
 		}
 
-		// parse dos números (income, expense, balance)
-		income, _ := strconv.ParseFloat(strings.ReplaceAll(columns[5], ",", "."), 64)
-		expense, _ := strconv.ParseFloat(strings.ReplaceAll(columns[6], ",", "."), 64)
-		balance, _ := strconv.ParseFloat(strings.ReplaceAll(columns[7], ",", "."), 64)
-
-		currentTransaction.INCOME = income
-		currentTransaction.EXPENSE = expense
-		currentTransaction.DAILY_BALANCE = balance
-
-		transactions = append(transactions, currentTransaction)
+		txs = append(txs, &domain.Transaction{
+			ID:              uuid.NewString(),
+			AGENCY:          agency,
+			ACCOUNT_ID:      accountID,
+			RELEASE_DATE:    releaseDate.Format("2006-01-02"),
+			ACCOUNTING_DATE: accountingDate.Format("2006-01-02"),
+			TITLE:           strings.TrimSpace(cols[2]),
+			DESCRIPTION:     strings.TrimSpace(cols[3]),
+			INCOME:          income,
+			EXPENSE:         expense,
+			DAILY_BALANCE:   balance,
+		})
 	}
-
-	if err := scanner.Err(); err != nil {
+	if err := sc.Err(); err != nil {
 		return nil, err
 	}
+	return txs, nil
+}
 
-	return transactions, nil
+func parseMoney(s string) (float64, error) {
+	s = strings.TrimSpace(s)
+	if strings.Contains(s, ",") {
+		s = strings.ReplaceAll(s, ".", "")
+		s = strings.ReplaceAll(s, ",", ".")
+	}
+	return strconv.ParseFloat(s, 64)
 }

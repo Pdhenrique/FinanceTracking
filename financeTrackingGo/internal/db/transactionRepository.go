@@ -109,7 +109,12 @@ func (t *transactionStorage) ImportTransactions(transactions []*domain.Transacti
 		return err
 	}
 
-	stmt, err := tx.Prepare(``)
+	stmt, err := tx.Prepare(`
+		INSERT INTO tb_transactions 
+			(id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance) 
+		VALUES 
+			($1, $2, $3, $4::date, $5::date, $6, $7, $8, $9, $10)
+	`)
 
 	if err != nil {
 		log.Printf("Error preparing statement: %v", err)

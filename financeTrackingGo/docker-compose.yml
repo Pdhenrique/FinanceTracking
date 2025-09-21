@@ -19,6 +19,8 @@ services:
       - "8080:8080"
     networks:
       - finance-network
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
 
 volumes:
   pgdata:
