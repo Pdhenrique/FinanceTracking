@@ -34,7 +34,7 @@ func Parse(r io.Reader) ([]*domain.Transaction, error) {
 				right := strings.TrimSpace(parts[1])
 				kv := strings.SplitN(left, ":", 2)
 				if len(kv) == 2 {
-					agency = strings.TrimSpace(kv[1])
+					agency = strings.TrimSpace(strings.Replace(kv[1], "/", "", -1))
 				}
 				accountID = strings.TrimSpace(right)
 			}
