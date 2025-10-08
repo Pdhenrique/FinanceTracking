@@ -40,6 +40,7 @@ func registerUserRoutes(v1 *gin.RouterGroup, h *handler) {
 }
 
 func registerTransactionRoutes(v1 *gin.RouterGroup, h *handler) {
+	v1.GET("/transactions", h.getTransactions)
 	v1.GET("/transactions/:id", h.getTransaction)
 	v1.POST("/transactions", h.postTransaction)
 	v1.POST("/statement", h.importTransactions)

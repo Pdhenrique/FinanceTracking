@@ -66,8 +66,8 @@ func (t *transactionStorage) FindByID(id string) (*domain.Transaction, error) {
 	transaction := &domain.Transaction{}
 
 	err := t.DB.QueryRow(
-		`SELECT id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance 
-		 FROM tb_transactions WHERE id = $1`,
+		`SELECT id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance
+                 FROM tb_transactions WHERE id = $1`,
 		id,
 	).Scan(
 		&transaction.ID,
@@ -88,6 +88,47 @@ func (t *transactionStorage) FindByID(id string) (*domain.Transaction, error) {
 	}
 
 	return transaction, nil
+}
+
+func (t *transactionStorage) FindAll() ([]*domain.Transaction, error) {
+	rows, err := t.DB.Query(`
+                SELECT id, agency, account_id, release_date, accounting_date, title, description, income, expense, daily_balance
+                FROM tb_transactions`)
+	if err != nil {
+		log.Printf("Error querying transactions: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var transactions []*domain.Transaction
+
+	for rows.Next() {
+		transaction := &domain.Transaction{}
+		if err := rows.Scan(
+			&transaction.ID,
+			&transaction.AGENCY,
+			&transaction.ACCOUNT_ID,
+			&transaction.RELEASE_DATE,
+			&transaction.ACCOUNTING_DATE,
+			&transaction.TITLE,
+			&transaction.DESCRIPTION,
+			&transaction.INCOME,
+			&transaction.EXPENSE,
+			&transaction.DAILY_BALANCE,
+		); err != nil {
+			log.Printf("Error scanning transaction row: %v", err)
+			return nil, err
+		}
+
+		transactions = append(transactions, transaction)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Printf("Row iteration error: %v", err)
+		return nil, err
+	}
+
+	return transactions, nil
 }
 
 func (t *transactionStorage) Delete(id string) error {
