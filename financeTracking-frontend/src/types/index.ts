@@ -1,12 +1,14 @@
-export type TransactionType = 'income' | 'expense' | 'transfer';
-
 export interface Transaction {
   id: string;
+  agency: string;
+  account_id: string;
+  release_date: string;
+  accounting_date: string;
+  title: string;
   description: string;
-  amount: number;
-  date: string;
-  category: string;
-  type: TransactionType;
+  income: number;
+  expense: number;
+  daily_balance: number;
 }
 
 export interface BalanceSummary {
