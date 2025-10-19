@@ -12,7 +12,11 @@ const TransactionTrendsChart: React.FC<TransactionTrendsChartProps> = ({ transac
   const processData = () => {
     // Agrupar transações por data
     const groupedByDate = transactions.reduce((acc, transaction) => {
-      const date = transaction.date.substring(0, 10); // Formato YYYY-MM-DD
+      const rawDate = transaction.release_date || transaction.accounting_date || '';
+      if (!rawDate) {
+        return acc;
+      }
+      const date = rawDate.substring(0, 10); // Formato YYYY-MM-DD
       if (!acc[date]) {
         acc[date] = {
           date,
@@ -21,11 +25,8 @@ const TransactionTrendsChart: React.FC<TransactionTrendsChartProps> = ({ transac
         };
       }
 
-      if (transaction.type === 'income') {
-        acc[date].income += transaction.amount;
-      } else if (transaction.type === 'expense') {
-        acc[date].expense += transaction.amount;
-      }
+      acc[date].income += Number(transaction.income || 0);
+      acc[date].expense += Number(transaction.expense || 0);
 
       return acc;
     }, {} as Record<string, { date: string; income: number; expense: number }>);

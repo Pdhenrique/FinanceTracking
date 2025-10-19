@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type { Transaction, BalanceSummary, CategorySummary } from "../types";
 
-const API_URL = "http://localhost:8080/v1/statement";
+const API_URL = "http://localhost:8080/v1/transactions";
 
 // Funções de API
 const fetchTransactions = async (): Promise<Transaction[]> => {
@@ -11,7 +11,9 @@ const fetchTransactions = async (): Promise<Transaction[]> => {
   return response.data;
 };
 
-const addTransactionAPI = async (transaction: Omit<Transaction, "id">): Promise<Transaction> => {
+const addTransactionAPI = async (
+  transaction: Omit<Transaction, "id">
+): Promise<Transaction> => {
   const response = await axios.post(API_URL, transaction);
   return response.data;
 };
@@ -20,8 +22,6 @@ const removeTransactionAPI = async (id: string): Promise<void> => {
   await axios.delete(`${API_URL}/${id}`);
   return;
 };
-
-
 
 export const useTransactions = () => {
   const queryClient = useQueryClient();
@@ -33,27 +33,34 @@ export const useTransactions = () => {
   const [categorySummary, setCategorySummary] = useState<CategorySummary[]>([]);
 
   // Buscar transações usando React Query
-  const { data: transactions = [], isLoading, isError } = useQuery({
+  const {
+    data: transactions = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["transactions"],
     queryFn: fetchTransactions,
     staleTime: 60 * 1000, // 1 minuto
     refetchOnWindowFocus: false,
-    onError: (error) => {
-      console.error("Erro ao buscar transações:", error);
-    },
   });
 
   // Calcular resumo de saldo quando as transações mudarem
   useEffect(() => {
     if (!isLoading && transactions && transactions.length > 0) {
-      const totalIncome = transactions.reduce((acc, transaction) => acc + transaction.income, 0);
-      const totalExpenses = transactions.reduce((acc, transaction) => acc + transaction.expense, 0);
+      const totalIncome = transactions.reduce(
+        (acc, transaction) => acc + transaction.income,
+        0
+      );
+      const totalExpenses = transactions.reduce(
+        (acc, transaction) => acc + transaction.expense,
+        0
+      );
       const totalBalance = totalIncome - totalExpenses;
 
       setBalanceSummary({
         totalBalance,
         income: totalIncome,
-        expenses: totalExpenses
+        expenses: totalExpenses,
       });
     }
   }, [transactions, isLoading]);
@@ -63,7 +70,7 @@ export const useTransactions = () => {
     if (!isLoading && transactions && transactions.length > 0) {
       // Agrupar despesas por título (usado como categoria)
       const expensesByTitle = transactions
-        .filter(transaction => transaction.expense > 0)
+        .filter((transaction) => transaction.expense > 0)
         .reduce((acc, transaction) => {
           const { title, expense } = transaction;
           if (!acc[title]) {
@@ -99,7 +106,7 @@ export const useTransactions = () => {
     },
     onError: (error) => {
       console.error("Erro ao adicionar transação:", error);
-    }
+    },
   });
 
   // Mutation para remover transação
@@ -111,7 +118,7 @@ export const useTransactions = () => {
     },
     onError: (error) => {
       console.error("Erro ao remover transação:", error);
-    }
+    },
   });
 
   // Adicionar nova transação
@@ -129,19 +136,19 @@ export const useTransactions = () => {
     transactions,
     balanceSummary,
     categorySummary,
-    
+
     // Funções
     addTransaction,
     removeTransaction,
-    
+
     // Estados da query
     isLoading,
     isError,
-    
+
     // Estados das mutations
     isAddingTransaction: addTransactionMutation.isPending,
     isRemovingTransaction: removeTransactionMutation.isPending,
     addTransactionError: addTransactionMutation.error,
-    removeTransactionError: removeTransactionMutation.error
+    removeTransactionError: removeTransactionMutation.error,
   };
 };

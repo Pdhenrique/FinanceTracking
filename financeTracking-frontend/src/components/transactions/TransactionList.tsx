@@ -61,33 +61,37 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onRemov
             </tr>
           </thead>
           <tbody>
-            {transactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell>
-                  <TransactionInfo>
-                    <IconContainer type={transaction.type}>
-                      {getTransactionIcon(transaction.type)}
-                    </IconContainer>
-                    <span>{transaction.description}</span>
-                  </TransactionInfo>
-                </TableCell>
-                <TableCell>
-                  <CategoryBadge>{transaction.category}</CategoryBadge>
-                </TableCell>
-                <TableCell>{formatDate(transaction.date)}</TableCell>
-                <TableCell align="right">
-                  <TransactionAmount type={transaction.type}>
-                    {transaction.type === 'expense' ? '- ' : ''}
-                    {formatCurrency(transaction.amount)}
-                  </TransactionAmount>
-                </TableCell>
-                <TableCell align="right">
-                  <DeleteButton onClick={() => onRemoveTransaction(transaction.id)}>
-                    Excluir
-                  </DeleteButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {transactions.map((transaction) => {
+              const type = transaction.expense > 0 ? 'expense' : (transaction.income > 0 ? 'income' : 'transfer');
+              const amount = transaction.income > 0 ? transaction.income : transaction.expense;
+              return (
+                <TableRow key={transaction.id}>
+                  <TableCell>
+                    <TransactionInfo>
+                      <IconContainer type={type}>
+                        {getTransactionIcon(type)}
+                      </IconContainer>
+                      <span>{transaction.description}</span>
+                    </TransactionInfo>
+                  </TableCell>
+                  <TableCell>
+                    <CategoryBadge>{transaction.title}</CategoryBadge>
+                  </TableCell>
+                  <TableCell>{formatDate(transaction.release_date)}</TableCell>
+                  <TableCell align="right">
+                    <TransactionAmount type={type}>
+                      {type === 'expense' ? '- ' : ''}
+                      {formatCurrency(amount)}
+                    </TransactionAmount>
+                  </TableCell>
+                  <TableCell align="right">
+                    <DeleteButton onClick={() => onRemoveTransaction(transaction.id)}>
+                      Excluir
+                    </DeleteButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </tbody>
         </TransactionsTable>
       )}
