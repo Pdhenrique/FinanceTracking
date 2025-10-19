@@ -19,9 +19,10 @@ func NewHandler(userService domain.UserService, transactionService domain.Transa
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowCredentials: true,
+		AllowHeaders:     []string{"Origin", "Content-Type", "Content-Length", "Authorization"},
 	}))
 
 	h := &handler{
