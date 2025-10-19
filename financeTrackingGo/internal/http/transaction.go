@@ -20,6 +20,16 @@ func (handler *handler) getTransaction(context *gin.Context) {
 	context.JSON(http.StatusOK, transaction)
 }
 
+func (handler *handler) getTransactions(context *gin.Context) {
+	transactions, err := handler.transactionService.GetAll()
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	context.JSON(http.StatusOK, transactions)
+}
+
 func (handler *handler) postTransaction(context *gin.Context) {
 	transaction := &domain.Transaction{}
 

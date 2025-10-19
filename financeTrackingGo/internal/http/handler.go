@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Pdhenrique/FinanceTracking/domain"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,21 +16,26 @@ type handler struct {
 func NewHandler(userService domain.UserService, transactionService domain.TransactionService) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 
-	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
+	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowCredentials: true,
+	}))
 
 	h := &handler{
 		userService:        userService,
 		transactionService: transactionService,
 	}
 
-	v1 := r.Group("/v1")
+	v1 := router.Group("/v1")
 	registerUserRoutes(v1, h)
 	registerTransactionRoutes(v1, h)
 
-	r.GET("/__health", func(c *gin.Context) { c.String(200, "ok") })
+	router.GET("/__health", func(c *gin.Context) { c.String(200, "ok") })
 
-	return r
+	return router
 }
 
 func registerUserRoutes(v1 *gin.RouterGroup, h *handler) {
@@ -40,6 +46,7 @@ func registerUserRoutes(v1 *gin.RouterGroup, h *handler) {
 }
 
 func registerTransactionRoutes(v1 *gin.RouterGroup, h *handler) {
+	v1.GET("/transactions", h.getTransactions)
 	v1.GET("/transactions/:id", h.getTransaction)
 	v1.POST("/transactions", h.postTransaction)
 	v1.POST("/statement", h.importTransactions)

@@ -21,6 +21,7 @@ type TransactionService interface {
 	Delete(id string) error
 	ImportTransactions(r io.Reader) (int, error)
 	GetByID(id string) (*Transaction, error)
+	GetAll() ([]*Transaction, error)
 }
 
 type TransactionStorage interface {
@@ -29,6 +30,7 @@ type TransactionStorage interface {
 	Delete(id string) error
 	ImportTransactions(transactions []*Transaction) error
 	FindByID(id string) (*Transaction, error)
+	FindAll() ([]*Transaction, error)
 }
 
 func NewTransaction(

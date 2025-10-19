@@ -34,6 +34,10 @@ func (s *service) GetByID(id string) (*domain.Transaction, error) {
 	return s.transactionStorage.FindByID(id)
 }
 
+func (s *service) GetAll() ([]*domain.Transaction, error) {
+	return s.transactionStorage.FindAll()
+}
+
 func (s *service) ImportTransactions(file io.Reader) (int, error) {
 	transactions, err := parser.Parse(file)
 	if err != nil {
