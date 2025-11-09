@@ -1,5 +1,7 @@
 package domain
 
+import "io"
+
 type Transaction struct {
 	ID              string  `json:"id"`
 	AGENCY          string  `json:"agency"`
@@ -14,11 +16,12 @@ type Transaction struct {
 }
 
 type TransactionService interface {
-	Create(transaction *Transaction) (*Transaction, error)
-	Update(transaction *Transaction) error
+	Post(transaction *Transaction) (*Transaction, error)
+	Put(transaction *Transaction) error
 	Delete(id string) error
-	ImportTransactions(transactions []*Transaction) error
+	ImportTransactions(r io.Reader) (int, error)
 	GetByID(id string) (*Transaction, error)
+	GetAll() ([]*Transaction, error)
 }
 
 type TransactionStorage interface {
@@ -26,7 +29,8 @@ type TransactionStorage interface {
 	Update(transaction *Transaction) error
 	Delete(id string) error
 	ImportTransactions(transactions []*Transaction) error
-	findByID(id string) (*Transaction, error)
+	FindByID(id string) (*Transaction, error)
+	FindAll() ([]*Transaction, error)
 }
 
 func NewTransaction(
