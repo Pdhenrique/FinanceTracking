@@ -28,7 +28,7 @@ func (u *userStorage) FindByID(id string) (*domain.User, error) {
 		&user.PASSWORD,
 		&user.CREATED_AT,
 		&user.UPDATED_AT,
-		&user.ACITVE)
+		&user.ACTIVE)
 
 	if err != nil {
 		log.Printf("Error finding user by ID %s: %v", id, err)
@@ -48,7 +48,7 @@ func (u *userStorage) FindByCpf(cpf string) (*domain.User, error) {
 		&user.PASSWORD,
 		&user.CREATED_AT,
 		&user.UPDATED_AT,
-		&user.ACITVE)
+		&user.ACTIVE)
 
 	if err != nil {
 		log.Printf("Error finding user by CPF %s: %v", cpf, err)
@@ -77,7 +77,7 @@ func (u *userStorage) Update(user *domain.User) error {
 		user.PASSWORD,
 		user.CREATED_AT,
 		user.UPDATED_AT,
-		user.ACITVE)
+		user.ACTIVE)
 
 	if err != nil {
 		log.Printf("Error updating user with ID %s: %v", user.ID, err)
@@ -87,7 +87,7 @@ func (u *userStorage) Update(user *domain.User) error {
 }
 
 func (u *userStorage) Insert(user *domain.User) (*domain.User, error) {
-	err := u.DB.QueryRow(`INSERT INTO tb_users (id, cpf, name, email, password, created_at, updated_at, active) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+	err := u.DB.QueryRow(`INSERT INTO tb_users (id, cpf, name, email, password, created_at, updated_at, ACTIVE) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
 		user.ID,
 		user.CPF,
 		user.NAME,
@@ -95,7 +95,7 @@ func (u *userStorage) Insert(user *domain.User) (*domain.User, error) {
 		user.PASSWORD,
 		user.CREATED_AT,
 		user.UPDATED_AT,
-		user.ACITVE).Scan(&user.ID)
+		user.ACTIVE).Scan(&user.ID)
 
 	if err != nil {
 		log.Printf("Error inserting user with ID %s: %v", user.ID, err)
@@ -103,4 +103,24 @@ func (u *userStorage) Insert(user *domain.User) (*domain.User, error) {
 	}
 
 	return user, nil
+}
+
+func (u *userStorage) FindByEmailOrCpf(email string, cpf string) (*domain.User, error) {
+	var user domain.User
+
+	err := u.DB.QueryRow(`SELECT * FROM tb_users WHERE email = $1 OR cpf = $2`, email, cpf).Scan(
+		&user.ID,
+		&user.CPF,
+		&user.NAME,
+		&user.EMAIL,
+		&user.PASSWORD,
+		&user.CREATED_AT,
+		&user.UPDATED_AT,
+		&user.ACTIVE)
+
+	if err != nil {
+		log.Printf("Error finding user by email %s or CPF %s: %v", email, cpf, err)
+	}
+
+	return &user, nil
 }
