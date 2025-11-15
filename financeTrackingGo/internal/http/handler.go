@@ -11,9 +11,10 @@ import (
 type handler struct {
 	userService        domain.UserService
 	transactionService domain.TransactionService
+	accountService     domain.AccountService
 }
 
-func NewHandler(userService domain.UserService, transactionService domain.TransactionService) http.Handler {
+func NewHandler(userService domain.UserService, transactionService domain.TransactionService, accountService domain.AccountService) http.Handler {
 	gin.SetMode(gin.ReleaseMode)
 
 	router := gin.Default()
@@ -28,11 +29,13 @@ func NewHandler(userService domain.UserService, transactionService domain.Transa
 	h := &handler{
 		userService:        userService,
 		transactionService: transactionService,
+		accountService:     accountService,
 	}
 
 	v1 := router.Group("/v1")
 	registerUserRoutes(v1, h)
 	registerTransactionRoutes(v1, h)
+	registerAccountRoutes(v1, h)
 
 	router.GET("/__health", func(c *gin.Context) { c.String(200, "ok") })
 
@@ -51,4 +54,13 @@ func registerTransactionRoutes(v1 *gin.RouterGroup, h *handler) {
 	v1.GET("/transactions/:id", h.getTransaction)
 	v1.POST("/transactions", h.postTransaction)
 	v1.POST("/statement", h.importTransactions)
+	v1.PUT("/transactions/:id", h.putAccount)
+	v1.DELETE("/transactions/:id", h.deleteAccount)
+}
+
+func registerAccountRoutes(v1 *gin.RouterGroup, h *handler) {
+	v1.GET("/account", h.getAccount)
+	v1.POST("/account", h.postAccount)
+	v1.PUT("/account/:id", h.putAccount)
+	v1.DELETE("/account/:id", h.deleteAccount)
 }

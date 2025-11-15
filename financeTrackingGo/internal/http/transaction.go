@@ -75,3 +75,38 @@ func (handler *handler) importTransactions(context *gin.Context) {
 		"original_filename": header.Filename,
 	})
 }
+
+func (handler *handler) putTransactions(context *gin.Context) {
+	id := context.Param("id")
+	transactions := &domain.Transaction{}
+
+	if err := context.ShouldBindJSON(&transactions); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "JSON invalido"})
+
+		return
+	}
+
+	transactions.ID = id
+
+	err := handler.transactionService.Put(transactions)
+
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	context.JSON(http.StatusOK, transactions)
+}
+
+func (handler *handler) deleteTransactions(context *gin.Context) {
+	id := context.Param("id")
+
+	err := handler.transactionService.Delete(id)
+
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	context.AbortWithStatus(http.StatusNoContent)
+}
