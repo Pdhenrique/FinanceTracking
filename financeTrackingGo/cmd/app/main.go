@@ -6,6 +6,7 @@ import (
 
 	"github.com/Pdhenrique/FinanceTracking/internal/db"
 	"github.com/Pdhenrique/FinanceTracking/internal/http"
+	"github.com/Pdhenrique/FinanceTracking/pkg/account"
 	"github.com/Pdhenrique/FinanceTracking/pkg/transaction"
 	"github.com/Pdhenrique/FinanceTracking/pkg/user"
 
@@ -48,11 +49,13 @@ func main() {
 
 	userStorage := db.NewUserStorage(conn)
 	transactionStorage := db.NewTransactionStorage(conn)
+	accountStorage := db.NewAccountStorage(conn)
 
 	userService := user.NewService(userStorage)
 	transactionService := transaction.NewService(transactionStorage)
+	accountService := account.NewService(accountStorage)
 
-	handler := http.NewHandler(userService, transactionService)
+	handler := http.NewHandler(userService, transactionService, accountService)
 
 	server := http.NewServer(handler, "8080")
 	server.Start()
